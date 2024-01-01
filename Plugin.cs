@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using SOD.Common.BepInEx;
 
@@ -10,8 +9,7 @@ public class Plugin : PluginController<Plugin>
 {
     public override void Load()
     {
-        // Plugin startup logic
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Utilities.Log("VMail Attachments Plugin Loaded!");
         Harmony harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
         harmony.PatchAll();
     }
