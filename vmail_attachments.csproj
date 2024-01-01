@@ -41,4 +41,8 @@
       <HintPath>lib\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)vmail_attachments.dll&quot; &quot;%AppData%\r2modmanPlus-local\ShadowsofDoubt\profiles\Default\BepInEx\plugins&quot;" />
+  </Target>
 </Project>
