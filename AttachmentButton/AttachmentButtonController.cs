@@ -2,17 +2,19 @@
 using BepInEx.Logging;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace vmail_attachments;
 
 public class AttachmentButtonController : MonoBehaviour
 {
+    public VMailApp App;
+    
     public Button Button { get; private set; }
     public TextMeshProUGUI Label { get; private set; }
 
+    private AttachmentDatabaseEntry _currentDatabaseEntry;
+    
     private void Awake()
     {
         NukeAutoTextController();
@@ -40,7 +42,7 @@ public class AttachmentButtonController : MonoBehaviour
         }
         else
         {
-            Utilities.Log("AttachmentButtonController: Expected autoTextController but it was null.", LogLevel.Debug);
+            Utilities.Log("AttachmentButtonController.NukeAutoTextController: Expected autoTextController but it was null.", LogLevel.Debug);
         }
     }
 
@@ -56,7 +58,7 @@ public class AttachmentButtonController : MonoBehaviour
         }
         else
         {
-            Utilities.Log("AttachmentButtonController: Expected textMeshPro but it was null.", LogLevel.Debug);
+            Utilities.Log("AttachmentButtonController.SetupLabel: Expected textMeshPro but it was null.", LogLevel.Debug);
         }
     }
 
@@ -66,7 +68,7 @@ public class AttachmentButtonController : MonoBehaviour
 
         if (Button == null)
         {
-            Utilities.Log("AttachmentButtonController: Expected attachmentButton but it was null.", LogLevel.Debug);
+            Utilities.Log("AttachmentButtonController.SetupButton: Expected attachmentButton but it was null.", LogLevel.Debug);
         }
     }
 
@@ -74,7 +76,7 @@ public class AttachmentButtonController : MonoBehaviour
     {
         if (Button != null)
         {
-            Button.onClick.RemoveAllListeners();
+            Button.onClick = new Button.ButtonClickedEvent();
         }
     }
 
@@ -91,6 +93,54 @@ public class AttachmentButtonController : MonoBehaviour
     
     private void OnAttachmentButtonClicked()
     {
-        Utilities.Log("AttachmentButtonController: The attachment button was clicked!", LogLevel.Debug);
+        PrintCurrentDatabaseEntry(App?.controller);
+    }
+
+    private void PrintCurrentDatabaseEntry(ComputerController currentCruncher)
+    {
+        if (currentCruncher == null)
+        {
+            Utilities.Log("AttachmentButtonController.PrintCurrentDatabaseEntry: Tried to print an attachment, but not at a computer!", LogLevel.Debug);
+            return;
+        }
+        
+        if (currentCruncher.printedDocument == null && currentCruncher.printTimer <= 0f)
+        {
+            currentCruncher.printTimer = 1f;
+            currentCruncher.printerParent.localPosition = new Vector3(currentCruncher.printerParent.localPosition.x, currentCruncher.printerParent.localPosition.y, -0.05f);
+            AudioController.Instance.PlayWorldOneShot(AudioControls.Instance.computerPrint, Player.Instance, currentCruncher.ic.interactable.node, currentCruncher.ic.interactable.wPos);
+            currentCruncher.printedDocument = _currentDatabaseEntry.CreateAttachmentDocument(currentCruncher.printerParent.position, currentCruncher.ic.transform.eulerAngles);
+            
+            Action onRemoved = App.OnPlayerTakePrint;
+            currentCruncher.printedDocument.OnRemovedFromWorld += onRemoved;
+            
+            Utilities.Log("AttachmentButtonController.PrintCurrentDatabaseEntry: Successfully printed an attachment!", LogLevel.Debug);
+        }
+        else
+        {
+            AudioController.Instance.PlayWorldOneShot(AudioControls.Instance.computerInvalidPasscode, Player.Instance, currentCruncher.ic.interactable.node, currentCruncher.ic.interactable.wPos);
+            Utilities.Log("AttachmentButtonController.PrintCurrentDatabaseEntry: Tried to print an attachment, but the print cooldown isn't done!", LogLevel.Debug);
+        }
+    }
+
+    public void RefreshMessage(StateSaveData.MessageThreadSave message)
+    {
+        _currentDatabaseEntry = null;
+        
+        if (message == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        
+        if (Plugin.Database.TryGetAttachment(message.threadID, out AttachmentDatabaseEntry entry))
+        {
+            gameObject.SetActive(true);
+            _currentDatabaseEntry = entry;
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

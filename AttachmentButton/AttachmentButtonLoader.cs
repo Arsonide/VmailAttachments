@@ -1,6 +1,5 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +11,13 @@ public class AttachmentButtonLoader
     [HarmonyPatch(typeof(VMailApp), "OnSetup")]
     private static void Postfix(VMailApp __instance)
     {
-        // TODO We only want to do this if the email we are viewing has an attachment.
         AttachmentButtonController attachmentButton = FindOrCreateAttachmentButton(__instance.gameObject);
+        
+        if (attachmentButton != null)
+        {
+            attachmentButton.App = __instance;
+            attachmentButton.RefreshMessage(__instance?.selectedThread);
+        }
     }
 
     private static AttachmentButtonController FindOrCreateAttachmentButton(GameObject parent)
@@ -40,7 +44,7 @@ public class AttachmentButtonLoader
         
         if (printButton == null)
         {
-            Utilities.Log("AttachmentButtonLoader: Needed to create attachment button but print button doesn't exist!", LogLevel.Debug);
+            Utilities.Log("AttachmentButtonLoader.FindOrCreateAttachmentButton: Needed to create attachment button but print button doesn't exist!", LogLevel.Debug);
             return null;
         }
 
