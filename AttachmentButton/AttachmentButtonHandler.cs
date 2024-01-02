@@ -3,7 +3,7 @@ using BepInEx.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 /// <summary>
 /// This component is always active, even if the button is not. This allows us to manage button visibility without doing a lot of GetComponent calls.
@@ -60,7 +60,7 @@ public class AttachmentButtonHandler : MonoBehaviour
             return;
         }
         
-        if (Plugin.Database.TryGetAttachment(vmail.threadID, out AttachmentDatabaseEntry entry))
+        if (VmailAttachmentsPlugin.Database.TryGetAttachment(vmail.threadID, out AttachmentDatabaseEntry entry))
         {
             _button.SetCurrentAttachment(true, entry.InteractablePresetName, entry.WriterID, entry.ReceiverID);
             _button.gameObject.SetActive(true);

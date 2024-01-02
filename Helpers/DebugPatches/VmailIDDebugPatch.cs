@@ -3,7 +3,7 @@
 using BepInEx.Logging;
 using HarmonyLib;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 [HarmonyPatch(typeof(VMailApp), "SetSelectedVmail")]
 public class VmailIDDebugPatch

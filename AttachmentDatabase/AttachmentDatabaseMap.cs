@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 [Serializable]
 public class AttachmentDatabaseMap

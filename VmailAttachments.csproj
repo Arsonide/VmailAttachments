@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>vmail_attachments</AssemblyName>
     <Description>My first plugin</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -12,7 +11,8 @@
       https://nuget.bepinex.dev/v3/index.json;
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>vmail_attachments</RootNamespace>
+    <RootNamespace>VmailAttachments</RootNamespace>
+    <PackageId>VmailAttachments</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,6 +46,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetDir)vmail_attachments.dll&quot; &quot;%AppData%\r2modmanPlus-local\ShadowsofDoubt\profiles\Default\BepInEx\plugins&quot;" />
+    <Exec Command="copy &quot;$(TargetDir)VmailAttachments.dll&quot; &quot;%AppData%\r2modmanPlus-local\ShadowsofDoubt\profiles\Default\BepInEx\plugins&quot;" />
   </Target>
 </Project>

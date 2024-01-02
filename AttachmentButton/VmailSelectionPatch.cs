@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 [HarmonyPatch]
 public class VmailSelectionPatch

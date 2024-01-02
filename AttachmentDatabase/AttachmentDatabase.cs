@@ -5,7 +5,7 @@ using System.Text.Json;
 using BepInEx.Logging;
 using SOD.Common;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 public class AttachmentDatabase
 {
@@ -14,7 +14,7 @@ public class AttachmentDatabase
     private string GetPluginSavePath(string savePath)
     {
         string uniqueString = Lib.SaveGame.GetUniqueString(savePath);
-        string fileName = $"vmail_attachments_{uniqueString}.json";
+        string fileName = $"VmailAttachments_{uniqueString}.json";
         return Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly(), fileName);
     }
 

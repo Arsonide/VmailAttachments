@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 public static class Utilities
 {
@@ -25,6 +25,6 @@ public static class Utilities
 #pragma warning restore CS0162
         }
         
-        Plugin.Log.Log(level, message);
+        VmailAttachmentsPlugin.Log.Log(level, message);
     }
 }

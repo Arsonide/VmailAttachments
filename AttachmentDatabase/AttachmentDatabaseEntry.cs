@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 [Serializable]
 public class AttachmentDatabaseEntry

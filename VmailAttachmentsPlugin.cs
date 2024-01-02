@@ -6,10 +6,10 @@ using SOD.Common;
 using SOD.Common.BepInEx;
 using SOD.Common.Helpers;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class Plugin : PluginController<Plugin>
+public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
 {
     public static AttachmentDatabase Database = new AttachmentDatabase();
     

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace vmail_attachments;
+namespace VmailAttachments;
 
 [HarmonyPatch]
 public class VmailSetupPatch
