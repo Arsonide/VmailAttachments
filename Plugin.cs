@@ -22,7 +22,8 @@ public class Plugin : PluginController<Plugin>
         
         Utilities.Log($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
         
-        ClassInjector.RegisterTypeInIl2Cpp<AttachmentButtonController>();
+        ClassInjector.RegisterTypeInIl2Cpp<AttachmentButton>();
+        ClassInjector.RegisterTypeInIl2Cpp<AttachmentButtonHandler>();
 
         Utilities.Log($"Plugin {MyPluginInfo.PLUGIN_GUID} has added custom types!");
 
