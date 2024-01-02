@@ -1,4 +1,4 @@
-﻿#if false
+﻿#if true
 
 using BepInEx.Logging;
 using HarmonyLib;
@@ -6,7 +6,7 @@ using HarmonyLib;
 namespace vmail_attachments;
 
 [HarmonyPatch(typeof(VMailApp), "SetSelectedVmail")]
-public class PrintVmailID
+public class VmailIDDebugPatch
 {
     [HarmonyPostfix]
     static void Postfix(VMailApp __instance, ComputerOSMultiSelectElement newSelection)
@@ -15,7 +15,7 @@ public class PrintVmailID
 
         if (selectedThread != null)
         {
-            Utilities.Log($"PrintVmailID.Postfix: User selected Vmail #{selectedThread.threadID}! Participant A is {selectedThread.participantA}!", LogLevel.Debug);
+            Utilities.Log($"VmailIDDebugPatch.Postfix: User selected Vmail #{selectedThread.threadID}! Participant A is {selectedThread.participantA}!", LogLevel.Debug);
         }
     }
 }
