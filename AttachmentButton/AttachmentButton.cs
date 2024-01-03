@@ -15,7 +15,7 @@ public class AttachmentButton : MonoBehaviour
 
     // Harmony won't let us pass AttachmentDatabaseEntry, so we'll pass these individually.
     private bool _currentAttachmentExists = false;
-    private string _currentAttachmentnteractablePresetName = string.Empty;
+    private string _currentAttachmentInteractablePresetName = string.Empty;
     private int _currentAttachmentWriterID = -1;
     private int _currentAttachmentReceiverID = -1;
 
@@ -149,14 +149,14 @@ public class AttachmentButton : MonoBehaviour
     public void SetCurrentAttachment(bool exists, string interactablePresetName = "", int writerID = -1, int receiverID = -1)
     {
         _currentAttachmentExists = exists;
-        _currentAttachmentnteractablePresetName = interactablePresetName;
+        _currentAttachmentInteractablePresetName = interactablePresetName;
         _currentAttachmentWriterID = writerID;
         _currentAttachmentReceiverID = receiverID;
     }
     
     private InteractablePreset GetInteractablePreset()
     {
-        return Toolbox.Instance.GetInteractablePreset(_currentAttachmentnteractablePresetName);
+        return Toolbox.Instance.GetInteractablePreset(_currentAttachmentInteractablePresetName);
     }
 
     private Human GetWriterHuman()

@@ -60,7 +60,7 @@ public class AttachmentButtonHandler : MonoBehaviour
             return;
         }
         
-        if (VmailAttachmentsPlugin.Database.TryGetAttachment(vmail.threadID, out AttachmentDatabaseEntry entry))
+        if (VmailAttachmentsPlugin.TryGetAttachment(vmail.threadID, out AttachmentDatabaseEntry entry))
         {
             _button.SetCurrentAttachment(true, entry.InteractablePresetName, entry.WriterID, entry.ReceiverID);
             _button.gameObject.SetActive(true);
