@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -38,43 +39,16 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
 
     private void OnAfterSave(object sender, SaveGameArgs args)
     {
-        if (_db == null)
-        {
-            Utilities.Log("VmailAttachmentsPlugin.OnAfterSave: Cannot save a null map.", LogLevel.Error);
-            return;
-        }
-
-        string pluginPath = GetPluginSavePath(args.FilePath);
-        
-        try
-        {
-            JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
-            string json = JsonSerializer.Serialize(_db, options);
-            File.WriteAllText(pluginPath, json);
-            Utilities.Log($"VmailAttachmentsPlugin.OnAfterSave: Successfully saved attachment database to {pluginPath}! {_db.Database.Count}");
-        }
-        catch (Exception e)
-        {
-            Utilities.Log($"VmailAttachmentsPlugin.OnAfterSave: {e.Message}", LogLevel.Error);
-        }
+#pragma warning disable CS4014
+        SaveToJsonAsync(args.FilePath);
+#pragma warning restore CS4014
     }
 
     private void OnAfterLoad(object sender, SaveGameArgs args)
     {
-        string pluginPath = GetPluginSavePath(args.FilePath);
-
-        try
-        {
-            JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
-            string json = File.ReadAllText(pluginPath);
-            _db = JsonSerializer.Deserialize<AttachmentDatabase>(json, options);
-            Utilities.Log($"VmailAttachmentsPlugin.OnAfterLoad: Successfully loaded attachment database from {pluginPath}!");
-        }
-        catch (Exception e)
-        {
-            _db = new AttachmentDatabase();
-            Utilities.Log($"VmailAttachmentsPlugin.OnAfterLoad: {e.Message}", LogLevel.Error);
-        }
+#pragma warning disable CS4014
+        LoadFromJsonAsync(args.FilePath);
+#pragma warning restore CS4014
     }
     
     private void OnAfterNewGame(object sender, EventArgs args)
@@ -90,6 +64,47 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
         return Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly(), fileName);
     }
 
+    private async Task SaveToJsonAsync(string savePath)
+    {
+        if (_db == null)
+        {
+            Utilities.Log("VmailAttachmentsPlugin.OnAfterSave: Cannot save a null map.", LogLevel.Error);
+            return;
+        }
+
+        string pluginPath = GetPluginSavePath(savePath);
+        
+        try
+        {
+            JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
+            string json = JsonSerializer.Serialize(_db, options);
+            await File.WriteAllTextAsync(pluginPath, json);
+            Utilities.Log($"VmailAttachmentsPlugin.OnAfterSave: Successfully saved attachment database to {pluginPath}! {_db.Database.Count}");
+        }
+        catch (Exception e)
+        {
+            Utilities.Log($"VmailAttachmentsPlugin.OnAfterSave: {e.Message}", LogLevel.Error);
+        }
+    }
+    
+    private async Task LoadFromJsonAsync(string savePath)
+    {
+        string pluginPath = GetPluginSavePath(savePath);
+
+        try
+        {
+            JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
+            string json = await File.ReadAllTextAsync(pluginPath);
+            _db = JsonSerializer.Deserialize<AttachmentDatabase>(json, options);
+            Utilities.Log($"VmailAttachmentsPlugin.OnAfterLoad: Successfully loaded attachment database from {pluginPath}!");
+        }
+        catch (Exception e)
+        {
+            _db = new AttachmentDatabase();
+            Utilities.Log($"VmailAttachmentsPlugin.OnAfterLoad: {e.Message}", LogLevel.Error);
+        }
+    }
+    
     public static void AddAttachment(int vmailID, string preset, int writer, int receiver)
     {
         AttachmentDatabaseEntry newEntry = new AttachmentDatabaseEntry()
