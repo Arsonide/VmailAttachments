@@ -130,7 +130,8 @@ public class AttachmentButton : MonoBehaviour
         if (currentCruncher.printedDocument == null && currentCruncher.printTimer <= 0f)
         {
             currentCruncher.printTimer = 1f;
-            currentCruncher.printerParent.localPosition = new Vector3(currentCruncher.printerParent.localPosition.x, currentCruncher.printerParent.localPosition.y, -0.05f);
+            Vector3 printerParentPosition = currentCruncher.printerParent.localPosition;
+            currentCruncher.printerParent.localPosition = new Vector3(printerParentPosition.x, printerParentPosition.y, -0.05f);
             AudioController.Instance.PlayWorldOneShot(AudioControls.Instance.computerPrint, Player.Instance, currentCruncher.ic.interactable.node, currentCruncher.ic.interactable.wPos);
             currentCruncher.printedDocument = CreateAttachmentDocument(currentCruncher.printerParent.position, currentCruncher.ic.transform.eulerAngles);
             
@@ -179,7 +180,7 @@ public class AttachmentButton : MonoBehaviour
         return item.humanID == _currentAttachmentReceiverID;
     }
 
-    public Interactable CreateAttachmentDocument(Vector3 worldPosition, Vector3 worldRotation)
+    private Interactable CreateAttachmentDocument(Vector3 worldPosition, Vector3 worldRotation)
     {
         Interactable document = InteractableCreator.Instance.CreateWorldInteractable(GetInteractablePreset(),
                                                                                      Player.Instance,

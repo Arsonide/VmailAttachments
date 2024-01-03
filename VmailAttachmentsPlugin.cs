@@ -127,7 +127,7 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
             JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
             string json = JsonSerializer.Serialize(_db, options);
             await File.WriteAllTextAsync(pluginPath, json);
-            Utilities.Log($"VmailAttachmentsPlugin.OnAfterSave: Successfully saved attachment database to {pluginPath}! {_db.Database.Count}");
+            Utilities.Log($"VmailAttachmentsPlugin.OnAfterSave: Successfully saved {_db.Database.Count} attachments to database at {pluginPath}!");
         }
         catch (Exception e)
         {
@@ -144,7 +144,7 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
             JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
             string json = await File.ReadAllTextAsync(pluginPath);
             _db = JsonSerializer.Deserialize<AttachmentDatabase>(json, options);
-            Utilities.Log($"VmailAttachmentsPlugin.OnAfterLoad: Successfully loaded attachment database from {pluginPath}!");
+            Utilities.Log($"VmailAttachmentsPlugin.OnAfterLoad: Successfully loaded {_db.Database.Count} attachments from database at {pluginPath}!");
         }
         catch (Exception e)
         {
