@@ -36,7 +36,41 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
         Lib.SaveGame.OnAfterLoad += OnAfterLoad;
         Lib.SaveGame.OnAfterNewGame += OnAfterNewGame;
     }
+    
+    public static void AddAttachment(int vmailID, string preset, int writer, int receiver)
+    {
+        AttachmentDatabaseEntry newEntry = new AttachmentDatabaseEntry()
+        {
+            InteractablePresetName = preset, WriterID = writer, ReceiverID = receiver
+        };
+        
+        _db.Database[vmailID] = newEntry;
+        Utilities.Log($"VmailAttachmentsPlugin.AddAttachment: Added {newEntry.ToString()} to vmail {vmailID}!", LogLevel.Debug);
+    }
+    
+    public static void AddAttachment(StateSaveData.MessageThreadSave vmail, InteractablePreset preset, Human writer, Human receiver)
+    {
+        AddAttachment(vmail.threadID, preset.presetName, writer.humanID, receiver.humanID);
+    }
 
+    public static bool TryGetAttachment(int vmailID, out AttachmentDatabaseEntry attachment)
+    {
+        bool result = _db.Database.TryGetValue(vmailID, out attachment);
+
+        if (attachment != null)
+        {
+            Utilities.Log($"VmailAttachmentsPlugin.TryGetAttachment: Vmail {vmailID}...found {attachment.ToString()}!", LogLevel.Debug);
+        }
+        else
+        {
+            Utilities.Log($"VmailAttachmentsPlugin.TryGetAttachment: Vmail {vmailID}...found NULL!", LogLevel.Debug);
+        }
+        
+        return result;
+    }
+
+#region Database JSON Serialization
+    
     private void OnAfterSave(object sender, SaveGameArgs args)
     {
 #pragma warning disable CS4014
@@ -105,35 +139,5 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
         }
     }
     
-    public static void AddAttachment(int vmailID, string preset, int writer, int receiver)
-    {
-        AttachmentDatabaseEntry newEntry = new AttachmentDatabaseEntry()
-        {
-            InteractablePresetName = preset, WriterID = writer, ReceiverID = receiver
-        };
-        
-        _db.Database[vmailID] = newEntry;
-        Utilities.Log($"VmailAttachmentsPlugin.AddAttachment: Added {newEntry.ToString()} to vmail {vmailID}!", LogLevel.Debug);
-    }
-    
-    public static void AddAttachment(StateSaveData.MessageThreadSave vmail, InteractablePreset preset, Human writer, Human receiver)
-    {
-        AddAttachment(vmail.threadID, preset.presetName, writer.humanID, receiver.humanID);
-    }
-
-    public static bool TryGetAttachment(int vmailID, out AttachmentDatabaseEntry attachment)
-    {
-        bool result = _db.Database.TryGetValue(vmailID, out attachment);
-
-        if (attachment != null)
-        {
-            Utilities.Log($"VmailAttachmentsPlugin.TryGetAttachment: Vmail {vmailID}...found {attachment.ToString()}!", LogLevel.Debug);
-        }
-        else
-        {
-            Utilities.Log($"VmailAttachmentsPlugin.TryGetAttachment: Vmail {vmailID}...found NULL!", LogLevel.Debug);
-        }
-        
-        return result;
-    }
+#endregion
 }
