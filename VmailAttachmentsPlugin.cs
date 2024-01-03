@@ -32,11 +32,25 @@ public class VmailAttachmentsPlugin : PluginController<VmailAttachmentsPlugin>
 
         Utilities.Log($"Plugin {MyPluginInfo.PLUGIN_GUID} has added custom types!");
 
+        Lib.SaveGame.OnAfterSave -= OnAfterSave;
         Lib.SaveGame.OnAfterSave += OnAfterSave;
+        
+        Lib.SaveGame.OnAfterLoad -= OnAfterLoad;
         Lib.SaveGame.OnAfterLoad += OnAfterLoad;
+        
+        Lib.SaveGame.OnAfterNewGame -= OnAfterNewGame;
         Lib.SaveGame.OnAfterNewGame += OnAfterNewGame;
     }
-    
+
+    public override bool Unload()
+    {
+        Lib.SaveGame.OnAfterSave -= OnAfterSave;
+        Lib.SaveGame.OnAfterLoad -= OnAfterLoad;
+        Lib.SaveGame.OnAfterNewGame -= OnAfterNewGame;
+        
+        return base.Unload();
+    }
+
     public static void AddAttachment(int vmailID, string preset, int writer, int receiver)
     {
         AttachmentDatabaseEntry newEntry = new AttachmentDatabaseEntry()
